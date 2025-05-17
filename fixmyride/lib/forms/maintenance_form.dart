@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'confirmation_page.dart';
+import 'package:fixmyride/forms/confirmation_page.dart';
 
 class MaintenanceFormScreen extends StatefulWidget {
   final String serviceName;
@@ -175,6 +175,7 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
                 controller: descriptionController,
                 decoration: InputDecoration(
                   labelText: "Additional Notes",
+                  hintText: "Optional - Additional contact number, Vehicle Details",
                   filled: true,
                   fillColor: Colors.grey.shade100,
                   border: OutlineInputBorder(

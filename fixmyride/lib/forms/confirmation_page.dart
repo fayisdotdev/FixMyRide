@@ -32,20 +32,23 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        title: const Text("Confirm Submission"),
-        content: const Text("Are you sure you want to submit this request?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("Cancel"),
+      builder:
+          (_) => AlertDialog(
+            title: const Text("Confirm Submission"),
+            content: const Text(
+              "Are you sure you want to submit this request?",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text("Yes, Submit"),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text("Yes, Submit"),
-          ),
-        ],
-      ),
     );
 
     setState(() {
@@ -59,9 +62,10 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
 
   Future<void> _submitToFirestore() async {
     setState(() => isSubmitting = true);
-    final collectionName = widget.formType == "Emergency"
-        ? "emergency_requests"
-        : "maintenance_requests";
+    final collectionName =
+        widget.formType == "Emergency"
+            ? "emergency_requests"
+            : "maintenance_requests";
 
     try {
       await FirebaseFirestore.instance.collection(collectionName).add({
@@ -78,9 +82,9 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
         isConfirmed = false; // treat as cancel/failure
         isSubmitting = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to submit data: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Failed to submit data: $e")));
     }
   }
 
@@ -91,16 +95,20 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
       const SizedBox(height: 8),
-      ...data.entries.map((entry) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                Text("${entry.key}: ",
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
-                Expanded(child: Text(entry.value.toString())),
-              ],
-            ),
-          )),
+      ...data.entries.map(
+        (entry) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            children: [
+              Text(
+                "${entry.key}: ",
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              Expanded(child: Text(entry.value.toString())),
+            ],
+          ),
+        ),
+      ),
       const SizedBox(height: 20),
     ];
   }
@@ -120,7 +128,6 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
       icon = const Icon(Icons.cancel, color: Colors.red, size: 100);
       statusText = "Your submission was canceled.";
     }
-    
 
     return Scaffold(
       appBar: AppBar(
@@ -141,7 +148,10 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
               ),
               const SizedBox(height: 30),
               ...buildInfoSection("User Information", widget.userData),
-              ...buildInfoSection("${widget.formType} Form Details", widget.formData),
+              ...buildInfoSection(
+                "${widget.formType} Form Details",
+                widget.formData,
+              ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
@@ -149,15 +159,12 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
                 },
                 child: const Text("Go Home"),
               ),
+              SizedBox(height: 10),
+              Text("You will recieve a mail immediately,\nThank you. (Check on the spam folder too)"),
             ],
           ),
         ),
       ),
-      
     );
-    
   }
-
-
-  
 }

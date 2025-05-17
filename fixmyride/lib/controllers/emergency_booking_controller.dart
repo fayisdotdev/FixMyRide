@@ -55,7 +55,7 @@ class EmergencyBookingController extends GetxController {
         'status': 'pending',
       });
 
-      Get.snackbar("Success", "Emergency request submitted successfully!");
+      // Get.snackbar("Success", "Emergency request submitted successfully!");
     } catch (e) {
       Get.snackbar("Error", "Failed to submit request: $e");
     } finally {

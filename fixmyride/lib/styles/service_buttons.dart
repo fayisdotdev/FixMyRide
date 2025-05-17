@@ -16,12 +16,17 @@ Widget customButtonLayout({
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (icon != null) ...[Icon(icon, size: 20), const SizedBox(width: 8)],
-          Text(
-            label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          Icon(icon, size: 24),
+          SizedBox(width: 8),
+          Expanded(
+            // or Flexible
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis, // optional
+              softWrap: true, // optional
+              style: TextStyle(fontSize: 16),
+            ),
           ),
         ],
       ),

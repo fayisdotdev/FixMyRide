@@ -14,13 +14,16 @@ class LoginScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Login'), centerTitle: true),
+      // appBar: AppBar(title: const Text('Login'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Obx(() {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text(""),
+              Text("Welcome Back!", style: TextStyle(fontSize: 26)),
+              SizedBox(height: 10),
               TextField(
                 controller: controller.emailController,
                 keyboardType: TextInputType.emailAddress,

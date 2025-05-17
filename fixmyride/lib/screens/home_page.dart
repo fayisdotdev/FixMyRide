@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fixmyride/controllers/home_page_controller.dart';
 import 'package:fixmyride/controllers/login_register_controller.dart';
-import 'package:fixmyride/styles/service_buttons.dart'; // The custom button layout
+import 'package:fixmyride/styles/service_buttons.dart'; 
 
 import 'package:fixmyride/forms/emergency_form.dart';
 import 'package:fixmyride/forms/maintenance_form.dart';
@@ -50,24 +50,24 @@ class HomePage extends StatelessWidget {
       body: Column(
         children: [
           const SizedBox(height: 16),
-          // Obx(() {
-          //   final userName =
-          //       authController.userName.value.isNotEmpty
-          //           ? authController.userName.value
-          //           : 'User';
+          Obx(() {
+            final userName =
+                authController.userName.value.isNotEmpty
+                    ? authController.userName.value
+                    : 'User';
 
-          //   return Padding(
-          //     padding: const EdgeInsets.all(8.0),
-          //     child: Text(
-          //       'Hi, $userName!',
-          //       style: const TextStyle(
-          //         fontSize: 20,
-          //         fontWeight: FontWeight.w500,
-          //       ),
-          //     ),
-          //   );
-          // }),
-          // const SizedBox(height: 16),
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Hi, $userName!',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
+          }),
+          const SizedBox(height: 16),
           Expanded(
             child: Obx(() {
               final services = homeController.currentServices;
