@@ -27,12 +27,17 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
         final user = FirebaseAuth.instance.currentUser;
         final email = user?.email ?? "anonymous";
 
-        final userDoc =
-            await FirebaseFirestore.instance
-                .collection('users')
-                .where('email', isEqualTo: email)
-                .limit(1)
-                .get();
+        // Cache values BEFORE using them
+        final String vehicle = vehicleTypeController.text.trim();
+        final String date = preferredDateController.text.trim();
+        final String time = preferredTimeController.text.trim();
+        final String description = descriptionController.text.trim();
+
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: email)
+            .limit(1)
+            .get();
 
         String phoneNumber = "unknown";
         String name = "unknown";
@@ -43,23 +48,39 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
           name = data['name'] ?? "unknown";
         }
 
-        // Navigate to ConfirmationPage without submitting yet
+        // ✅ Add to Firestore
+        await FirebaseFirestore.instance.collection('maintenance_requests').add({
+          "service": widget.serviceName,
+          "vehicle": vehicle,
+          "date": date,
+          "time": time,
+          "description": description,
+          "name": name,
+          "phone": phoneNumber,
+          "email": email,
+          "timestamp": FieldValue.serverTimestamp(),
+        });
+
+        // ✅ Navigate to ConfirmationPage
         Get.to(
           () => ConfirmationPage(
             formType: "Maintenance",
             formData: {
-              "Service": widget.serviceName,
-              "Vehicle": vehicleTypeController.text,
-              "Date": preferredDateController.text,
-              "Time": preferredTimeController.text,
-              "Description": descriptionController.text,
+              "service": widget.serviceName,
+              "vehicle": vehicle,
+              "date": date,
+              "time": time,
+              "description": description,
             },
-            userData: {"Name": name, "Phone": phoneNumber, "Email": email},
-            // skipSubmission: false (default), so submission happens inside ConfirmationPage
+            userData: {
+              "name": name,
+              "phone": phoneNumber,
+              "email": email,
+            },
           ),
         );
 
-        // Optionally clear fields after navigation
+        // Optional: clear fields
         vehicleTypeController.clear();
         preferredDateController.clear();
         preferredTimeController.clear();
@@ -79,7 +100,6 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
     super.dispose();
   }
 
-  //ui side remains the same
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,9 +130,7 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
                 controller: preferredDateController,
                 readOnly: true,
                 onTap: () async {
-                  FocusScope.of(
-                    context,
-                  ).requestFocus(FocusNode()); // Prevent keyboard
+                  FocusScope.of(context).requestFocus(FocusNode());
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
                     initialDate: DateTime.now(),
@@ -131,21 +149,17 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
                 ),
                 validator: (value) => value!.isEmpty ? 'Enter a date' : null,
               ),
-
               const SizedBox(height: 16),
               TextFormField(
                 controller: preferredTimeController,
                 readOnly: true,
                 onTap: () async {
-                  FocusScope.of(
-                    context,
-                  ).requestFocus(FocusNode()); // Prevent keyboard
+                  FocusScope.of(context).requestFocus(FocusNode());
                   TimeOfDay? pickedTime = await showTimePicker(
                     context: context,
                     initialTime: TimeOfDay.now(),
                   );
                   if (pickedTime != null) {
-                    // ignore: use_build_context_synchronously
                     preferredTimeController.text = pickedTime.format(context);
                   }
                 },
@@ -156,7 +170,6 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
                 ),
                 validator: (value) => value!.isEmpty ? 'Enter a time' : null,
               ),
-
               const SizedBox(height: 16),
               TextFormField(
                 controller: descriptionController,
@@ -172,7 +185,6 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
                 ),
                 maxLines: 3,
               ),
-
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submitForm,
@@ -181,7 +193,7 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  backgroundColor: Colors.blueAccent, // Customize your color
+                  backgroundColor: Colors.blueAccent,
                   elevation: 4,
                 ),
                 child: const Text(

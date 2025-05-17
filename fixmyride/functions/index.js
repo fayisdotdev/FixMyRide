@@ -59,24 +59,26 @@ exports.sendMaintenanceBookingEmail = functions.firestore
   .onCreate(async (snap, context) => {
     const data = snap.data();
 
-    if (!data || !data.userEmail || !data.serviceName) {
+    if (!data || !data.email || !data.service) {
       logger.error("Missing maintenance booking data. Cannot send email.");
       return;
     }
 
+
     const mailOptions = {
       from: "FixMyRide <fixmyride.services.com>",
-      to: data.userEmail,
+      to: data.email,
       subject: "Maintenance Booking Confirmation",
       html: `
-        <p>Hello, ${data.userName} - (${data.userEmail})</p>
+        <p>Hello, ${data.name} - (${data.email})</p>
         <p>Your maintenance booking has been received successfully.</p>
         <ul>
-          <li><strong>Service:</strong> ${data.serviceName}</li>
+          <li><strong>Service:</strong> ${data.service}</li>
           <li><strong>Vehicle:</strong> ${data.vehicle}</li>
           <li><strong>Description:</strong> ${data.description}</li>
           <li><strong>Date:</strong> ${data.date || "Not specified"}</li>
-          <li><strong>Phone:</strong> ${data.userPhone}</li>
+          <li><strong>Time:</strong> ${data.time || "Not specified"}</li>
+          <li><strong>Phone:</strong> ${data.phone}</li>
         </ul>
         <p>We will contact you shortly.</p>
         <p>Team Fix My Ride.</p>
@@ -86,7 +88,7 @@ exports.sendMaintenanceBookingEmail = functions.firestore
 
     try {
       await transporter.sendMail(mailOptions);
-      logger.info("Maintenance email sent to:", data.userEmail);
+      logger.info("Maintenance email sent to:", data.email);
     } catch (error) {
       logger.error("Error sending maintenance email:", error);
     }

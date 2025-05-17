@@ -51,7 +51,6 @@ class _EmergencyFormScreenState extends State<EmergencyFormScreen> {
 
       // Navigate to Confirmation Page
       Navigator.push(
-        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
           builder:
