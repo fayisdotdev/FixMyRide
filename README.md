@@ -1,4 +1,4 @@
-# FixMyRide
+# Fix My Ride
 
 A Flutter-based mobile application for vehicle maintenance and repair management.
 
