@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1056065961125",
+    "project_id": "fixmyride-2025",
+    "storage_bucket": "fixmyride-2025.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056065961125:android:ff3a850448280870c7e14c",
+        "android_client_info": {
+          "package_name": "com.example.fixmyride"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1wcGSABsik3DWqW7DurZct493vgJ_kMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
