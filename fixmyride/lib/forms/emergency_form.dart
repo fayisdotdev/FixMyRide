@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fixmyride/controllers/emergency_booking_controller.dart';
 import 'package:geolocator/geolocator.dart';
-import 'confirmation_page.dart'; // <- Import your confirmation page
+import 'package:fixmyride/forms/confirmation_page.dart';
 
 class EmergencyFormScreen extends StatefulWidget {
   final String serviceName;
@@ -50,24 +50,16 @@ class _EmergencyFormScreenState extends State<EmergencyFormScreen> {
       final userPhone = controller.userPhone;
 
       // Navigate to Confirmation Page
-      Navigator.push(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(
-          builder:
-              (_) => ConfirmationPage(
-                formType: "Emergency",
-                formData: {
-                  'Service': widget.serviceName,
-                  'Vehicle': vehicle,
-                  'Description': description,
-                  'Location': 'Lat: $latitude, Lng: $longitude',
-                },
-                userData: {
-                  'Name': userName ?? "N/A",
-                  'Phone': userPhone ?? "N/A",
-                },
-              ),
+      Get.to(
+        () => ConfirmationPage(
+          formType: "Emergency",
+          formData: {
+            'Service': widget.serviceName,
+            'Vehicle': vehicle,
+            'Description': description,
+            'Location': 'Lat: $latitude, Lng: $longitude',
+          },
+          userData: {'Name': userName ?? "N/A", 'Phone': userPhone ?? "N/A"},
         ),
       );
 
@@ -126,6 +118,8 @@ class _EmergencyFormScreenState extends State<EmergencyFormScreen> {
                 controller: descriptionController,
                 decoration: const InputDecoration(
                   labelText: "Description",
+                  hintText:
+                      "Optional - Vehicle number, Additional contact number, Nearby Landmark.",
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 3,
@@ -147,6 +141,10 @@ class _EmergencyFormScreenState extends State<EmergencyFormScreen> {
                   ),
                 ),
                 child: Text("Submit Request"),
+              ),
+              SizedBox(height: 20),
+              Text(
+                "Kindly check your device settings to allow location if not allowed.",
               ),
             ],
           ),

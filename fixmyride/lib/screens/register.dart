@@ -21,6 +21,8 @@ class SignupScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text("Buckle Up!", style: TextStyle(fontSize: 26)),
+                SizedBox(height: 15),
                 TextField(
                   controller: controller.nameController,
                   decoration: InputDecoration(
