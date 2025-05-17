@@ -109,3 +109,6 @@ flutter build web --release
 - Flutter Team
 - Firebase
 - GetX Team
+
+## ScreenShots
+https://drive.google.com/drive/folders/19eqRhqdsJazo8SqZP62mRsSlSI4mOFMR?usp=drive_link 
