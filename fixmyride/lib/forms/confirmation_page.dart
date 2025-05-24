@@ -30,6 +30,7 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
   Future<void> _showConfirmationDialog() async {
     await Future.delayed(Duration.zero); // Ensures dialog shows after build
     final result = await showDialog<bool>(
+      // ignore: use_build_context_synchronously
       context: context,
       barrierDismissible: false,
       builder:
@@ -83,6 +84,7 @@ class _ConfirmationPageState extends State<ConfirmationPage> {
         isSubmitting = false;
       });
       ScaffoldMessenger.of(
+        // ignore: use_build_context_synchronously
         context,
       ).showSnackBar(SnackBar(content: Text("Failed to submit data: $e")));
     }
