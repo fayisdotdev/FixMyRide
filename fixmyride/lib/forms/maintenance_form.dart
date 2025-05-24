@@ -160,6 +160,7 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
                     initialTime: TimeOfDay.now(),
                   );
                   if (pickedTime != null) {
+                    // ignore: use_build_context_synchronously
                     preferredTimeController.text = pickedTime.format(context);
                   }
                 },
