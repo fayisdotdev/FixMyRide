@@ -1,110 +1,101 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fixmyride/controllers/booked_service_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BookedServicesScreen extends StatelessWidget {
   BookedServicesScreen({super.key});
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  Future<List<QueryDocumentSnapshot>> fetchEmergencyServices() async {
-    final user = _auth.currentUser;
-    if (user == null) return [];
-    final snapshot =
-        await _firestore
-            .collection('emergency_requests')
-            .where('userEmail', isEqualTo: user.email) // or use 'userEmail'
-            .get();
-    return snapshot.docs;
-  }
-
-  Future<List<QueryDocumentSnapshot>> fetchMaintenanceServices() async {
-    final user = _auth.currentUser;
-    if (user == null) return [];
-    final snapshot =
-        await _firestore
-            .collection('maintenance_requests')
-            .where('userEmail', isEqualTo: user.email) // or use 'userEmail'
-            .get();
-    return snapshot.docs;
-  }
+  final controller = Get.put(BookedServicesController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Booked Services')),
-      body: FutureBuilder<List<List<QueryDocumentSnapshot>>>(
-        future: Future.wait([
-          fetchEmergencyServices(),
-          fetchMaintenanceServices(),
-        ]),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+        if (controller.emergencyServices.isEmpty &&
+            controller.maintenanceServices.isEmpty) {
+          return const Center(child: Text('No booked services found.'));
+        }
 
-          final emergencyDocs = snapshot.data?[0] ?? [];
-          final maintenanceDocs = snapshot.data?[1] ?? [];
-
-          if (emergencyDocs.isEmpty && maintenanceDocs.isEmpty) {
-            return const Center(child: Text('No booked services found.'));
-          }
-
-          return ListView(
+        return RefreshIndicator(
+          onRefresh: controller.refreshServices,
+          child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              if (emergencyDocs.isNotEmpty) ...[
+              if (controller.emergencyServices.isNotEmpty) ...[
                 const Text(
                   'Emergency Services',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                ...emergencyDocs.map((doc) {
+                ...controller.emergencyServices.map((doc) {
                   final data = doc.data() as Map<String, dynamic>;
-                  return Card(
-                    child: ListTile(
-                      title: Text(data['vehicle'] ?? 'No vehicle info'),
-                      subtitle: Text(
-                        '${data['serviceName'] ?? ''}\n${data['description'] ?? ''}',
-                      ),
-                      trailing: Text(
-                        'Longitude: ${data['longitude'] ?? ''},\nLatitude: ${data['latitude'] ?? ''}',
+                  return Dismissible(
+                    key: Key(doc.id),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: const Icon(Icons.delete, color: Colors.white),
+                    ),
+                    onDismissed: (_) =>
+                        controller.deleteService(doc.id, 'emergency'),
+                    child: Card(
+                      child: ListTile(
+                        title: Text(data['vehicle'] ?? 'No vehicle info'),
+                        subtitle: Text(
+                          '${data['serviceName'] ?? ''}\n${data['description'] ?? ''}',
+                        ),
+                        trailing: Text(
+                          'Latitude: ${data['latitude'] ?? ''},\nLogitude: ${data['longitude'] ?? ''}',
+                        ),
                       ),
                     ),
                   );
                 }),
                 const SizedBox(height: 16),
               ],
-              if (maintenanceDocs.isNotEmpty) ...[
+              if (controller.maintenanceServices.isNotEmpty) ...[
                 const Text(
                   'Maintenance Services',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                ...maintenanceDocs.map((doc) {
+                ...controller.maintenanceServices.map((doc) {
                   final data = doc.data() as Map<String, dynamic>;
-                  return Card(
-                    child: ListTile(
-                      title: Text(data['vehicle'] ?? 'No vehicle type'),
-                      subtitle:  Text(
-                        '${data['service'] ?? ''}\n${data['description'] ?? ''}',
-                      ),
-                      trailing: Text(
-                        'Date: ${data['date'] ?? ''},\nTime: ${data['time'] ?? ''}',
+                  return Dismissible(
+                    key: Key(doc.id),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: const Icon(Icons.delete, color: Colors.white),
+                    ),
+                    onDismissed: (_) =>
+                        controller.deleteService(doc.id, 'maintenance'),
+                    child: Card(
+                      child: ListTile(
+                        title: Text(data['vehicle'] ?? 'No vehicle info'),
+                        subtitle: Text(
+                          '${data['serviceName'] ?? ''}\n${data['description'] ?? ''}',
+                        ),
+                        trailing: Text(
+                          'Date: ${data['date'] ?? ''}\nTime: ${data['time'] ?? ''}',
+                        ),
                       ),
                     ),
                   );
                 }),
               ],
             ],
-          );
-        },
-      ),
+          ),
+        );
+      }),
     );
   }
 }

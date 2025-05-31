@@ -1,35 +1,65 @@
 import 'package:flutter/material.dart';
 
-// A reusable button widget function
+// A reusable button widget
 Widget customButtonLayout({
   required String label,
   required VoidCallback onTap,
-  IconData? icon, // New optional icon param
+  IconData? icon,
   double width = double.infinity,
 }) {
   return SizedBox(
     width: width,
-    child: ElevatedButton(
-      onPressed: onTap,
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 24),
-          SizedBox(width: 8),
-          Expanded(
-            // or Flexible
-            child: Text(
-              label,
-              overflow: TextOverflow.ellipsis, // optional
-              softWrap: true, // optional
-              style: TextStyle(fontSize: 16),
+    child: GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.white,
+              offset: Offset(-4, -4),
+              blurRadius: 6,
             ),
-          ),
-        ],
+            BoxShadow(
+              color: Colors.black12,
+              offset: Offset(4, 4),
+              blurRadius: 6,
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 20, color: Colors.black54),
+              const SizedBox(width: 10),
+            ],
+            Flexible(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
+    ),
+  );
+}
+
+Widget buildProfileItem(String label, String value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10),
+    child: Row(
+      children: [
+        Text("$label: ", style: const TextStyle(fontWeight: FontWeight.bold)),
+        Expanded(child: Text(value)),
+      ],
     ),
   );
 }

@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
               SizedBox(height: 8), // Adds spacing between the texts
               Text(
-                '"wherever you go, we will be there."',
+                'wherever you go, we will be there.',
                 style: TextStyle(
                   fontSize: 16,
                   color: Color.fromARGB(255, 21, 74, 165),

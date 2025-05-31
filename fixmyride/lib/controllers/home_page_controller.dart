@@ -20,9 +20,9 @@ class HomeController extends GetxController {
   final List<ServiceItem> maintenanceServices = [
     ServiceItem(name: "Full Service", icon: Icons.build_circle_outlined),
     ServiceItem(name: "Brake Issues", icon: Icons.car_repair),
-    ServiceItem(name: "Engine \nOverheating", icon: Icons.thermostat_outlined),
+    ServiceItem(name: "Engine Overheating", icon: Icons.thermostat_outlined),
     ServiceItem(
-      name: "Check Engine \nLight On",
+      name: "Check Engine Light On",
       icon: Icons.warning_amber_rounded,
     ),
   ];
@@ -30,12 +30,12 @@ class HomeController extends GetxController {
 
   final List<ServiceItem> emergencyServices = [
     ServiceItem(name: "Dead Battery", icon: Icons.battery_alert),
-    ServiceItem(name: "Flat or \nWorn-out Tires", icon: Icons.tire_repair),
+    ServiceItem(name: "Flat or Worn-out Tires", icon: Icons.tire_repair),
     ServiceItem(
-      name: "Fuel / Charge \nFinished",
+      name: "Fuel / Charge Finished",
       icon: Icons.local_gas_station,
     ),
-    ServiceItem(name: "Suddenly \nStopped", icon: Icons.car_crash),
+    ServiceItem(name: "Suddenly Stopped", icon: Icons.car_crash),
   ];
 
   // Getter for currently selected services

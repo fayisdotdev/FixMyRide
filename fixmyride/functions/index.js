@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 // ✅ Emergency Booking Email Function
 exports.sendEmergencyBookingEmail = functions.firestore
   .document("emergency_requests/{requestId}")
-  .onCreate(async (snap, context) => {
+  .onCreate(async (snap) => {
     const data = snap.data();
 
     if (!data || !data.userEmail || !data.serviceName) {
@@ -56,10 +56,10 @@ exports.sendEmergencyBookingEmail = functions.firestore
 // ✅ Maintenance Booking Email Function
 exports.sendMaintenanceBookingEmail = functions.firestore
   .document("maintenance_requests/{requestId}")
-  .onCreate(async (snap, context) => {
+  .onCreate(async (snap) => {
     const data = snap.data();
 
-    if (!data || !data.email || !data.service) {
+    if (!data || !data.userEmail || !data.serviceName) {
       logger.error("Missing maintenance booking data. Cannot send email.");
       return;
     }
@@ -67,18 +67,18 @@ exports.sendMaintenanceBookingEmail = functions.firestore
 
     const mailOptions = {
       from: "FixMyRide <fixmyride.services.com>",
-      to: data.email,
+      to: data.userEmail,
       subject: "Maintenance Booking Confirmation",
       html: `
-        <p>Hello, ${data.name} - (${data.email})</p>
+        <p>Hello, ${data.userName} - (${data.userEmail})</p>
         <p>Your maintenance booking has been received successfully.</p>
         <ul>
-          <li><strong>Service:</strong> ${data.service}</li>
+          <li><strong>Service:</strong> ${data.serviceName}</li>
           <li><strong>Vehicle:</strong> ${data.vehicle}</li>
           <li><strong>Description:</strong> ${data.description}</li>
           <li><strong>Date:</strong> ${data.date || "Not specified"}</li>
           <li><strong>Time:</strong> ${data.time || "Not specified"}</li>
-          <li><strong>Phone:</strong> ${data.phone}</li>
+          <li><strong>Phone:</strong> ${data.userPhone}</li>
         </ul>
         <p>We will contact you shortly.</p>
         <p>Team Fix My Ride.</p>
@@ -88,7 +88,7 @@ exports.sendMaintenanceBookingEmail = functions.firestore
 
     try {
       await transporter.sendMail(mailOptions);
-      logger.info("Maintenance email sent to:", data.email);
+      logger.info("Maintenance email sent to:", data.userEmail);
     } catch (error) {
       logger.error("Error sending maintenance email:", error);
     }

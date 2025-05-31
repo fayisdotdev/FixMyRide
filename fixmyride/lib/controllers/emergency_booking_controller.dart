@@ -5,11 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 class EmergencyBookingController extends GetxController {
   var isLoading = false.obs;
 
-  // ✅ Store fetched user info for access after submission
   String? userName;
   String? userPhone;
 
-  Future<void> submitEmergencyRequest({
+  Future<Map<String, dynamic>> prepareEmergencyRequestData({
     required String serviceName,
     required String vehicle,
     required String description,
@@ -21,10 +20,9 @@ class EmergencyBookingController extends GetxController {
     try {
       String? email = FirebaseAuth.instance.currentUser?.email ?? 'anonymous';
 
-      // 🔍 Fetch user name and phone from "users" collection
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
-          .where('email', isEqualTo: email)
+          .where('userEmail', isEqualTo: email)
           .limit(1)
           .get();
 
@@ -33,31 +31,31 @@ class EmergencyBookingController extends GetxController {
 
       if (userDoc.docs.isNotEmpty) {
         final data = userDoc.docs.first.data();
-        phoneNumber = data['phone'] ?? "unknown";
-        name = data['name'] ?? "unknown";
+        phoneNumber = data['userPhone'] ?? "unknown";
+        name = data['userName'] ?? "unknown";
       }
 
-      // ✅ Assign to controller variables
-      userPhone = phoneNumber;
-      userName = name;
+      userPhone = userPhone;
+      userName = userName;
 
-      // Save the request to Firestore
-      await FirebaseFirestore.instance.collection('emergency_requests').add({
-        'serviceName': serviceName,
-        'vehicle': vehicle,
-        'description': description,
-        'latitude': latitude,
-        'longitude': longitude,
-        'timestamp': FieldValue.serverTimestamp(),
-        'userEmail': email,
-        'userName': name,
-        'userPhone': phoneNumber,
-        'status': 'pending',
-      });
-
-      // Get.snackbar("Success", "Emergency request submitted successfully!");
+      // Just return the prepared data, no Firestore writing here
+      return {
+        'formData': {
+          'serviceName': serviceName,
+          'vehicle': vehicle,
+          'description': description,
+          'latitude': latitude,
+          'longitude': longitude,
+        },
+        'userData': {
+          'userEmail': email,
+          'userName': name,
+          'userPhone': phoneNumber,
+        },
+      };
     } catch (e) {
-      Get.snackbar("Error", "Failed to submit request: $e");
+      Get.snackbar("Error", "Failed to prepare request data: $e");
+      return {};
     } finally {
       isLoading.value = false;
     }

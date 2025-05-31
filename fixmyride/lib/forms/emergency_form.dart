@@ -35,8 +35,8 @@ class _EmergencyFormScreenState extends State<EmergencyFormScreen> {
       final vehicle = vehicleController.text.trim();
       final description = descriptionController.text.trim();
 
-      // Save the emergency request
-      await controller.submitEmergencyRequest(
+      // Prepare data without submitting to Firestore yet
+      final data = await controller.prepareEmergencyRequestData(
         serviceName: widget.serviceName,
         vehicle: vehicle,
         description: description,
@@ -44,26 +44,24 @@ class _EmergencyFormScreenState extends State<EmergencyFormScreen> {
         longitude: longitude!,
       );
 
-      // Fetch user info from controller (assumes controller stores it)
-      final userName =
-          controller.userName; // You should assign this in the controller
-      final userPhone = controller.userPhone;
+      if (data.isEmpty) {
+        // error already handled in controller
+        return;
+      }
 
-      // Navigate to Confirmation Page
+      final formData = data['formData'] as Map<String, dynamic>;
+      final userData = data['userData'] as Map<String, dynamic>;
+
+      // Navigate to Confirmation Page with data
       Get.to(
         () => ConfirmationPage(
           formType: "Emergency",
-          formData: {
-            'Service': widget.serviceName,
-            'Vehicle': vehicle,
-            'Description': description,
-            'Location': 'Lat: $latitude, Lng: $longitude',
-          },
-          userData: {'Name': userName ?? "N/A", 'Phone': userPhone ?? "N/A"},
+          formData: formData,
+          userData: userData,
         ),
       );
 
-      // Clear form
+      // Clear form fields after navigation
       vehicleController.clear();
       descriptionController.clear();
     }

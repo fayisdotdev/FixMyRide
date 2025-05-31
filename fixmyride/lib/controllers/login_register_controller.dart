@@ -55,9 +55,9 @@ class LoginRegisterController extends GetxController {
       if (user != null) {
         await _firestore.collection("users").doc(user.uid).set({
           "uid": user.uid,
-          "name": nameController.text.trim(),
-          "email": emailController.text.trim(),
-          "phone": phoneController.text.trim(),
+          "userName": nameController.text.trim(),
+          "userEmail": emailController.text.trim(),
+          "userPhone": phoneController.text.trim(),
           "createdAt": FieldValue.serverTimestamp(),
         });
 
@@ -128,7 +128,7 @@ class LoginRegisterController extends GetxController {
         final userDoc = await _firestore.collection('users').doc(uid).get();
         if (userDoc.exists) {
           final data = userDoc.data();
-          userName.value = data?['name'] ?? '';
+          userName.value = data?['userName'] ?? '';
         }
       }
     } catch (e) {
