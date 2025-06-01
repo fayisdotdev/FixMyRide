@@ -25,7 +25,7 @@ class FixMyRideApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
 
-      home: const SplashScreen(), // Initial screen
+      home:  SplashScreen(), // Initial screen
     );
   }
 }

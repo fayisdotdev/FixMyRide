@@ -1,9 +1,10 @@
 import 'package:fixmyride/screens/booked_services.dart';
+import 'package:fixmyride/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fixmyride/controllers/home_page_controller.dart';
 import 'package:fixmyride/controllers/login_register_controller.dart';
-import 'package:fixmyride/styles/service_buttons.dart'; 
+import 'package:fixmyride/styles/service_buttons.dart';
 
 import 'package:fixmyride/forms/emergency_form.dart';
 import 'package:fixmyride/forms/maintenance_form.dart';
@@ -26,14 +27,17 @@ class HomePage extends StatelessWidget {
               } else if (value == 'booked_services') {
                 Get.to(() => BookedServicesScreen());
               }
+              else if (value == 'edit_profile') {
+                Get.to(() => UserProfilePage());
+              }
             },
 
             itemBuilder: (BuildContext context) {
               return [
-                // const PopupMenuItem<String>(
-                //   value: 'edit_profile',
-                //   child: Text('Edit Profile'),
-                // ),
+                const PopupMenuItem<String>(
+                  value: 'edit_profile',
+                  child: Text('Edit Profile'),
+                ),
                 const PopupMenuItem<String>(
                   value: 'booked_services',
                   child: Text('Booked Services'),

@@ -68,14 +68,15 @@ class _EmergencyFormScreenState extends State<EmergencyFormScreen> {
   }
 
   Future<void> _getLocation() async {
-    final pos = await Geolocator.getCurrentPosition(
-      // ignore: deprecated_member_use
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    setState(() {
-      latitude = pos.latitude;
-      longitude = pos.longitude;
-    });
+    LocationPermission permission = await Geolocator.checkPermission();
+if (permission == LocationPermission.denied) {
+  permission = await Geolocator.requestPermission();
+}
+
+    // setState(() {
+    //   latitude = pos.latitude;
+    //   longitude = pos.longitude;
+    // });
   }
 
   @override
