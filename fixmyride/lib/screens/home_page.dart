@@ -1,6 +1,8 @@
+import 'package:fixmyride/drawer/add_driver.dart';
 import 'package:fixmyride/drawer/add_spare_parts.dart';
 import 'package:fixmyride/drawer/development_team.dart';
 import 'package:fixmyride/drawer/spare_parts.dart';
+import 'package:fixmyride/drawer/view_drivers.dart';
 import 'package:fixmyride/screens/booked_services.dart';
 import 'package:fixmyride/screens/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -88,11 +90,20 @@ class HomePage extends StatelessWidget {
 
             Divider(),
             ListTile(
-              leading: const Icon(Icons.developer_mode_outlined),
-              title: const Text('Developers'),
+              leading: const Icon(Icons.add_circle_outline),
+              title: const Text('Add Drivers'),
               onTap: () {
                 Get.back();
-                Get.to(() => DevelopmentTeam());
+                Get.to(() => AddDriverPage());
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.view_agenda),
+              title: const Text('Drivers'),
+              onTap: () {
+                Get.back();
+                Get.to(() => ViewDriversPage());
               },
             ),
             Divider(),
@@ -105,12 +116,21 @@ class HomePage extends StatelessWidget {
               },
             ),
             Divider(),
-             ListTile(
+            ListTile(
               leading: const Icon(Icons.switch_access_shortcut_add),
               title: const Text('View Spare Parts'),
               onTap: () {
                 Get.back();
                 Get.to(() => ViewSparePartsPage());
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.developer_mode_outlined),
+              title: const Text('Developers'),
+              onTap: () {
+                Get.back();
+                Get.to(() => DevelopmentTeam());
               },
             ),
             Divider(),
