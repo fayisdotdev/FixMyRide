@@ -63,3 +63,21 @@ Widget buildProfileItem(String label, String value) {
     ),
   );
 }
+
+class DrawerItemTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const DrawerItemTile({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(leading: Icon(icon), title: Text(label), onTap: onTap);
+  }
+}

@@ -69,14 +69,35 @@ class _EmergencyFormScreenState extends State<EmergencyFormScreen> {
 
   Future<void> _getLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
-if (permission == LocationPermission.denied) {
-  permission = await Geolocator.requestPermission();
-}
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Get.snackbar("Permission Denied", "Location permission is required.");
+        return;
+      }
+    }
 
-    // setState(() {
-    //   latitude = pos.latitude;
-    //   longitude = pos.longitude;
-    // });
+    if (permission == LocationPermission.deniedForever) {
+      Get.snackbar(
+        "Permission Denied",
+        "Location permission is permanently denied. Please enable it in settings.",
+      );
+      return;
+    }
+
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        // ignore: deprecated_member_use
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      setState(() {
+        latitude = position.latitude;
+        longitude = position.longitude;
+      });
+    } catch (e) {
+      Get.snackbar("Error", "Failed to get location: $e");
+    }
   }
 
   @override

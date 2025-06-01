@@ -1,3 +1,6 @@
+import 'package:fixmyride/drawer/add_spare_parts.dart';
+import 'package:fixmyride/drawer/development_team.dart';
+import 'package:fixmyride/drawer/spare_parts.dart';
 import 'package:fixmyride/screens/booked_services.dart';
 import 'package:fixmyride/screens/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -26,31 +29,95 @@ class HomePage extends StatelessWidget {
                 authController.logoutUser();
               } else if (value == 'booked_services') {
                 Get.to(() => BookedServicesScreen());
-              }
-              else if (value == 'edit_profile') {
+              } else if (value == 'edit_profile') {
                 Get.to(() => UserProfilePage());
               }
             },
-
             itemBuilder: (BuildContext context) {
-              return [
-                const PopupMenuItem<String>(
+              return const [
+                PopupMenuItem<String>(
                   value: 'edit_profile',
                   child: Text('Edit Profile'),
                 ),
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'booked_services',
                   child: Text('Booked Services'),
                 ),
-                const PopupMenuItem<String>(
-                  value: 'logout',
-                  child: Text('Logout'),
-                ),
+                PopupMenuItem<String>(value: 'logout', child: Text('Logout')),
               ];
             },
           ),
         ],
       ),
+
+      // ✅ Drawer Added
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Obx(() {
+                final userName =
+                    authController.userName.value.isNotEmpty
+                        ? authController.userName.value
+                        : 'User';
+                return Text(
+                  'Hello, $userName!',
+                  style: const TextStyle(color: Colors.white, fontSize: 20),
+                );
+              }),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Edit Profile'),
+              onTap: () {
+                Get.back(); // close drawer
+                Get.to(() => UserProfilePage());
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.list_alt),
+              title: const Text('Booked Services'),
+              onTap: () {
+                Get.back();
+                Get.to(() => BookedServicesScreen());
+              },
+            ),
+
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.developer_mode_outlined),
+              title: const Text('Developers'),
+              onTap: () {
+                Get.back();
+                Get.to(() => DevelopmentTeam());
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.add_box_sharp),
+              title: const Text('Spare Parts'),
+              onTap: () {
+                Get.back();
+                Get.to(() => AddSparePartPage());
+              },
+            ),
+            Divider(),
+             ListTile(
+              leading: const Icon(Icons.switch_access_shortcut_add),
+              title: const Text('View Spare Parts'),
+              onTap: () {
+                Get.back();
+                Get.to(() => ViewSparePartsPage());
+              },
+            ),
+            Divider(),
+          ],
+        ),
+      ),
+
       body: Column(
         children: [
           const SizedBox(height: 16),
@@ -86,11 +153,11 @@ class HomePage extends StatelessWidget {
                     childAspectRatio: 1.1,
                   ),
                   itemBuilder: (context, index) {
-                    final service = services[index]; // now a ServiceItem
+                    final service = services[index];
 
                     return customButtonLayout(
                       label: service.name,
-                      icon: service.icon, // Pass icon here
+                      icon: service.icon,
                       onTap: () {
                         if (homeController.selectedIndex.value == 0) {
                           Get.to(
