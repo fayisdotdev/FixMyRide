@@ -6,11 +6,11 @@ class AdminDetailsPage extends StatelessWidget {
   final String phone;
 
   const AdminDetailsPage({
-    Key? key,
+    super.key,
     required this.name,
     required this.email,
     required this.phone,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

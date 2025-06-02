@@ -6,6 +6,7 @@ import 'package:fixmyride/admin/add_spare_parts.dart';
 import 'package:fixmyride/admin/admin_details.dart';
 import 'package:fixmyride/admin/manage_drivers.dart';
 import 'package:fixmyride/admin/manage_garage.dart';
+import 'package:fixmyride/admin/manage_spare_parts.dart';
 import 'package:fixmyride/screens/login_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -77,7 +78,7 @@ class AdminHome extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () => Get.to(() => const ManageGaragesPage()),
+              onPressed: () => Get.to(() => const ManageSparePartsPage()),
               child: const Text('Manage Spare Parts'),
             ),
             const Spacer(),
