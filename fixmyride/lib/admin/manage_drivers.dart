@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ViewDriversPage extends StatelessWidget {
-  const ViewDriversPage({super.key});
+class ManageDrivers extends StatelessWidget {
+  const ManageDrivers({super.key});
 
   @override
   Widget build(BuildContext context) {

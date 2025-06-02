@@ -81,3 +81,21 @@ class DrawerItemTile extends StatelessWidget {
     return ListTile(leading: Icon(icon), title: Text(label), onTap: onTap);
   }
 }
+
+
+  // Widget _buildTextField(TextEditingController controller, String label,
+  //     {bool required = true, TextInputType keyboardType = TextInputType.text}) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(bottom: 12.0),
+  //     child: TextFormField(
+  //       controller: controller,
+  //       decoration: InputDecoration(
+  //         labelText: label,
+  //         border: const OutlineInputBorder(),
+  //       ),
+  //       keyboardType: keyboardType,
+  //       validator: (value) =>
+  //           required && (value == null || value.trim().isEmpty) ? 'Enter $label' : null,
+  //     ),
+  //   );
+  // }

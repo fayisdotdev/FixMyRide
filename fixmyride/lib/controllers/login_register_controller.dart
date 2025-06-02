@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fixmyride/admin/admin_home.dart';
 import 'package:fixmyride/screens/home_page.dart';
 import 'package:fixmyride/screens/login_Screen.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +47,9 @@ class LoginRegisterController extends GetxController {
     try {
       final UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim(),
-          );
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
 
       final User? user = userCredential.user;
 
@@ -90,13 +91,47 @@ class LoginRegisterController extends GetxController {
       Get.snackbar("Success", "Login successful");
       clearControllers();
 
-      // Navigate to HomePage
-      await fetchUserProfile();
-      Get.offAll(() => HomePage());
+      await detectUserRoleAndRedirect();
     } on FirebaseAuthException catch (e) {
       Get.snackbar("Error", e.message ?? "Login failed");
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  /// Detect user role and redirect to appropriate homepage
+  Future<void> detectUserRoleAndRedirect() async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return;
+
+    try {
+      // Check 'admins' collection
+      final adminDoc = await _firestore.collection('admins').doc(uid).get();
+      if (adminDoc.exists) {
+        final data = adminDoc.data();
+        userName.value = data?['adminName'] ?? '';
+        Get.offAll(() => AdminHome(
+              name: data?['adminName'] ?? '',
+              email: data?['adminEmail'] ?? '',
+              phone: data?['adminPhone'] ?? '',
+            ));
+        return;
+      }
+
+      // Check 'users' collection
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        final data = userDoc.data();
+        userName.value = data?['userName'] ?? '';
+        Get.offAll(() => HomePage());
+        return;
+      }
+
+      // TODO: Add checks for 'drivers', 'garages', etc. if needed
+
+      Get.snackbar('Error', 'User role not found in database.');
+    } catch (e) {
+      Get.snackbar('Error', 'Role detection failed: ${e.toString()}');
     }
   }
 
@@ -120,7 +155,7 @@ class LoginRegisterController extends GetxController {
     }
   }
 
-  /// Fetch user profile from Firestore
+  /// (Optional) Fetch user name directly from 'users' collection
   Future<void> fetchUserProfile() async {
     try {
       final uid = _auth.currentUser?.uid;

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,6 +24,7 @@ class _AddDriverPageState extends State<AddDriverPage> {
   final TextEditingController profileImageUrlController = TextEditingController();
 
   String availabilityStatus = 'Available';
+  String status = 'Approved';
   bool isSubmitting = false;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -35,15 +38,16 @@ class _AddDriverPageState extends State<AddDriverPage> {
         final currentUser = _auth.currentUser;
 
         await _firestore.collection('drivers').add({
-          'name': nameController.text.trim(),
-          'phone': phoneController.text.trim(),
-          'email': emailController.text.trim(),
+          'driverName': nameController.text.trim(),
+          'driverPhone': phoneController.text.trim(),
+          'driverEmail': emailController.text.trim(),
           'nativePlace': nativePlaceController.text.trim(),
           'currentPlace': currentPlaceController.text.trim(),
-          'vehicle': vehicleController.text.trim(),
+          'driverVehicle': vehicleController.text.trim(),
           'experience': experienceController.text.trim(),
           'profileImageUrl': profileImageUrlController.text.trim(),
           'availabilityStatus': availabilityStatus,
+          'status': status,
           'addedBy': currentUser?.email ?? 'Unknown',
           'timestamp': FieldValue.serverTimestamp(),
         });
@@ -62,6 +66,7 @@ class _AddDriverPageState extends State<AddDriverPage> {
         experienceController.clear();
         profileImageUrlController.clear();
         setState(() => availabilityStatus = 'Available');
+        setState(() => status = 'Approved');
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to add driver: $e')),
@@ -117,6 +122,23 @@ class _AddDriverPageState extends State<AddDriverPage> {
                 onChanged: (value) {
                   if (value != null) {
                     setState(() => availabilityStatus = value);
+                  }
+                },
+              ),
+              DropdownButtonFormField<String>(
+                value: status,
+                decoration: const InputDecoration(
+                  labelText: 'Status',
+                  border: OutlineInputBorder(),
+                ),
+                items: const [
+                  DropdownMenuItem(value: 'Approved', child: Text('Approved')),
+                  DropdownMenuItem(value: 'Pending', child: Text('Pending')),
+                  DropdownMenuItem(value: 'Not Approved', child: Text('Not Approved')),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => status = value);
                   }
                 },
               ),

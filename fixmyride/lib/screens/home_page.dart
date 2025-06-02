@@ -1,8 +1,11 @@
-import 'package:fixmyride/drawer/add_driver.dart';
-import 'package:fixmyride/drawer/add_spare_parts.dart';
+// import 'package:fixmyride/admin/add_admin.dart';
+// import 'package:fixmyride/admin/add_driver.dart';
+// import 'package:fixmyride/admin/add_garage.dart';
+import 'package:fixmyride/admin/add_spare_parts.dart';
 import 'package:fixmyride/drawer/development_team.dart';
-import 'package:fixmyride/drawer/spare_parts.dart';
+import 'package:fixmyride/drawer/view_spare_parts.dart';
 import 'package:fixmyride/drawer/view_drivers.dart';
+import 'package:fixmyride/drawer/view_garages.dart';
 import 'package:fixmyride/screens/booked_services.dart';
 import 'package:fixmyride/screens/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -88,15 +91,15 @@ class HomePage extends StatelessWidget {
               },
             ),
 
-            Divider(),
-            ListTile(
-              leading: const Icon(Icons.add_circle_outline),
-              title: const Text('Add Drivers'),
-              onTap: () {
-                Get.back();
-                Get.to(() => AddDriverPage());
-              },
-            ),
+            // Divider(),
+            // ListTile(
+            //   leading: const Icon(Icons.add_circle_outline),
+            //   title: const Text('Add Drivers'),
+            //   onTap: () {
+            //     Get.back();
+            //     Get.to(() => AddDriverPage());
+            //   },
+            // ),
             Divider(),
             ListTile(
               leading: const Icon(Icons.view_agenda),
@@ -106,7 +109,34 @@ class HomePage extends StatelessWidget {
                 Get.to(() => ViewDriversPage());
               },
             ),
+            // Divider(),
+            // ListTile(
+            //   leading: const Icon(Icons.garage_outlined),
+            //   title: const Text('Add Garage'),
+            //   onTap: () {
+            //     Get.back();
+            //     Get.to(() => AddGaragePage());
+            //   },
+            // ),
             Divider(),
+            ListTile(
+              leading: const Icon(Icons.garage),
+              title: const Text('Garages'),
+              onTap: () {
+                Get.back();
+                Get.to(() => ViewGaragesPage());
+              },
+            ),
+            Divider(),
+            // ListTile(
+            //   leading: const Icon(Icons.garage),
+            //   title: const Text('Add admin'),
+            //   onTap: () {
+            //     Get.back();
+            //     Get.to(() => AddAdminPage());
+            //   },
+            // ),
+            // Divider(),
             ListTile(
               leading: const Icon(Icons.add_box_sharp),
               title: const Text('Spare Parts'),
