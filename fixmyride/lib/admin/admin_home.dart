@@ -1,17 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fixmyride/admin/add_admin.dart';
-import 'package:fixmyride/admin/add_driver.dart';
-import 'package:fixmyride/admin/add_garage.dart';
-import 'package:fixmyride/admin/add_spare_parts.dart';
-import 'package:fixmyride/admin/admin_details.dart';
-import 'package:fixmyride/admin/manage_drivers.dart';
-import 'package:fixmyride/admin/manage_garage.dart';
-import 'package:fixmyride/admin/manage_spare_parts.dart';
-import 'package:fixmyride/screens/login_Screen.dart';
+import 'package:fixmyride/admin/admin_profile.dart';
+import 'package:fixmyride/admin/controllers/admin_home_controller.dart';
+import 'package:fixmyride/users/controllers/login_register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:fixmyride/styles/service_buttons.dart';
 
-class AdminHome extends StatelessWidget {
+class AdminHome extends StatefulWidget {
   final String name;
   final String email;
   final String phone;
@@ -23,75 +17,75 @@ class AdminHome extends StatelessWidget {
     required this.phone,
   });
 
-  void _logout() async {
-    await FirebaseAuth.instance.signOut();
-    Get.offAll(() => const LoginScreen());
-  }
+  @override
+  State<AdminHome> createState() => _AdminHomeState();
+}
+
+class _AdminHomeState extends State<AdminHome> {
+  final LoginRegisterController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(
+      AdminHomeController(
+        name: widget.name,
+        email: widget.email,
+        phone: widget.phone,
+      ),
+    );
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Admin Home')),
+      appBar: AppBar(
+        title: const Text('Admin Home'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'logout') {
+                authController.logoutUser();
+              } else if (value == 'view_profile') {
+                Get.to(
+                  () => AdminDetailsPage(
+                    name: widget.name,
+                    email: widget.email,
+                    phone: widget.phone,
+                  ),
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return const [
+                PopupMenuItem<String>(value: 'logout', child: Text('Logout')),
+                PopupMenuItem<String>(
+                  value: 'view_profile',
+                  child: Text('View Profile'),
+                ),
+              ];
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Get.to(
-                  () =>
-                      AdminDetailsPage(name: name, email: email, phone: phone),
-                );
-              },
-              child: const Text('Admin Details'),
+        child: Obx(() {
+          final actions = controller.adminActions;
+          return GridView.builder(
+            itemCount: actions.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.1,
             ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => Get.to(() => const AddAdminPage()),
-              child: const Text('Add Admin'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => Get.to(() => const AddDriverPage()),
-              child: const Text('Add Driver'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => Get.to(() => const AddGaragePage()),
-              child: const Text('Add Garages'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => Get.to(() => const AddSparePartPage()),
-              child: const Text('Add Spare Parts'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => Get.to(() => const ManageDrivers()),
-              child: const Text('Manage Drivers'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => Get.to(() => const ManageGaragesPage()),
-              child: const Text('Manage Garages'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => Get.to(() => const ManageSparePartsPage()),
-              child: const Text('Manage Spare Parts'),
-            ),
-            const Spacer(),
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: _logout,
-                icon: const Icon(Icons.logout),
-                label: const Text('Logout'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              ),
-            ),
-          ],
-        ),
+            itemBuilder: (context, index) {
+              final action = actions[index];
+              return customButtonLayout(
+                label: action.label,
+                icon: action.icon,
+                onTap: action.onTap,
+              );
+            },
+          );
+        }),
       ),
     );
   }

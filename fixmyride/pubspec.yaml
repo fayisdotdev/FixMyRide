@@ -43,6 +43,8 @@ dependencies:
   http: ^1.4.0
   flutter_launcher_icons: ^0.14.3
   google_fonts: ^6.2.1
+  firebase_storage: ^12.4.6
+  file_picker: ^10.1.9
 
 dev_dependencies:
   flutter_test:
